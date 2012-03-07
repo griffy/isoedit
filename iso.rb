@@ -16,9 +16,6 @@ MapTileWidth = 32
 MapTileHeight = 16
 MapTileFullHeight = MapTileHeight + (MapTileHeight / 2)
 
-# OffsetX = (ScreenWidth / 2) - MapWidth * (MapTileWidth / 2)
-# OffsetY = (ScreenHeight / 2) - 8
-
 class FPS
   def initialize(game, x, y)
     @game = game
@@ -58,10 +55,18 @@ class Game < Gosu::Window
     @key_down_times = Hash.new(0)
     @cursor = Gosu::Image.new(self, "images/cursor.#{ImageExt}")
     @fps = FPS.new(self, 10, 10)
-    @fields = [TextField.new(self, 50, 50, 100),
-               TextField.new(self, 50, 80, 100),
-               TextField.new(self, 50, 200, 200),
+    @fields = [TextField.new(self, 50, 50, 100, 
+                             :fgcolor => Gosu::Color::GREEN,
+                             :bgcolor => Gosu::Color::WHITE),
+               TextField.new(self, 50, 80, 100,
+                             :fgcolor => Gosu::Color::RED,
+                             :bgcolor => Gosu::Color::WHITE),
+               TextField.new(self, 50, 200, 200,
+                             :fgcolor => Gosu::Color::BLACK,
+                             :bgcolor => Gosu::Color::GREEN),
                TextField.new(self, 220, 120, 78)]
+    @gui_objects = [Button.new(self, 130, 50, 50, 20)]
+    @gui_objects.concat @fields
   end
 
   def load_fonts(dir)
@@ -86,13 +91,16 @@ class Game < Gosu::Window
   def update
     @time = Gosu::milliseconds
     @keys_down.each { |key| @key_down_times[key] += 1 }
+    @gui_objects.each { |obj| obj.update }
+    if @gui_objects[0].clicked
+      @gui_objects[3].text += "Clicked!"
+    end
     @fps.update
-    @fields.each { |field| field.update }
   end
 
   def draw
     @map.draw
-    @fields.each { |field| field.draw }
+    @gui_objects.each { |obj| obj.draw }
     @fps.draw
     @cursor.draw mouse_x, mouse_y, 0
   end
