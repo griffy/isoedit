@@ -12,6 +12,7 @@ end
 
 module Clickable
   def update
+    @hovering ||= false
     @clicked ||= false
     @left_was_down_inside ||= false
 
@@ -20,6 +21,8 @@ module Clickable
     end
 
     if mouse_within?
+      @hovering = true
+
       if not @left_was_down_inside
         @left_was_down_inside = left_mouse_down?
       end
@@ -29,6 +32,7 @@ module Clickable
         @clicked = true
       end
     else
+      @hovering = false
       @left_was_down_inside = false
     end
   end

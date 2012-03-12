@@ -55,17 +55,23 @@ class Game < Gosu::Window
     @key_down_times = Hash.new(0)
     @cursor = Gosu::Image.new(self, "images/cursor.#{ImageExt}")
     @fps = FPS.new(self, 10, 10)
-    @fields = [TextField.new(self, 50, 50, 100, 
+    @fields = [TextField.new(self, 150, 50, 100, 
                              :fgcolor => Gosu::Color::GREEN,
                              :bgcolor => Gosu::Color::WHITE),
-               TextField.new(self, 50, 80, 100,
+               TextField.new(self, 150, 100, 100,
                              :fgcolor => Gosu::Color::RED,
                              :bgcolor => Gosu::Color::WHITE),
-               TextField.new(self, 50, 200, 200,
+               TextField.new(self, 150, 150, 200,
                              :fgcolor => Gosu::Color::BLACK,
                              :bgcolor => Gosu::Color::GREEN),
-               TextField.new(self, 220, 120, 78)]
-    @gui_objects = [Button.new(self, 130, 50, 50, 20)]
+               TextField.new(self, 150, 200, 78)]
+    @buttons = [Button.new(self, 10, 50, 50, 20),
+                TextButton.new(self, 10, 100, "Click Me"),
+                ImageButton.new(self, 10, 150, "images/buttons/button1up.png",
+                                :hover => "images/buttons/button1hover.png",
+                                :click => "images/buttons/button1down.png")]
+    @gui_objects = []
+    @gui_objects.concat @buttons
     @gui_objects.concat @fields
   end
 
@@ -93,7 +99,11 @@ class Game < Gosu::Window
     @keys_down.each { |key| @key_down_times[key] += 1 }
     @gui_objects.each { |obj| obj.update }
     if @gui_objects[0].clicked
-      @gui_objects[3].text += "Clicked!"
+      if @gui_objects[3].text.empty?
+        @gui_objects[3].text = "Clicked!"
+      else
+        @gui_objects[3].text = ""
+      end
     end
     @fps.update
   end
